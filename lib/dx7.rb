@@ -1,4 +1,5 @@
 require_relative 'dx7/algorithms'
+require_relative 'dx7/cli'
 require_relative 'dx7/operator'
 require_relative 'dx7/validations'
 
@@ -96,6 +97,16 @@ module DX7
         data: @data.merge(key => value).freeze,
         operators: @operators
       )
+    end
+
+    def set_op(op, key, value)
+      index = %i[op1 op2 op3 op4 op5 op6].index(op)
+      raise "invalid op: #{op.inspect}" if index.nil?
+    
+      operators = @operators.dup
+      operators[index] = @operators[index].set(key, value)
+    
+      self.class.new(data: @data, operators: operators)
     end
   end
 end

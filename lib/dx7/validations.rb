@@ -1,6 +1,8 @@
 module DX7
   module Validations
     def validate!(key, value)
+      raise "unknown key: #{key}" unless self.class::KEYS.include?(key)
+
       check = validation(key)
       unless check.include?(value)
         raise "validation #{check} failed for #{key} = #{value}" 
@@ -12,7 +14,7 @@ module DX7
         return v if keys.include?(key)
       end
   
-      raise "validation not found for #{key}" if val.nil?
+      raise "validation not found for #{key}"
     end
 
     def check_validations!

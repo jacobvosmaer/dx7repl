@@ -20,17 +20,31 @@ module DX7
       %i[opi lfks] => 0..1,
       %i[lfw] => 0..5,
       %i[trnp] => 0..48,
-      %i[vnam1 vnam2 vnam3 vnam4 vnam5 vnam6 vnam7 vnam8 vnam9 vnam10] => 33..126,
+      %i[vnam1 vnam2 vnam3 vnam4 vnam5 vnam6 vnam7 vnam8 vnam9 vnam10] => 32..126,
     }
 
     LEGEND1 = 'Alg  Fbl  Osc.sync  Transpose    Voice name'.freeze
     LEGEND3 = 'Pitch EG     R1  R2  R3  R4  L1  L2  L3  L4'.freeze
     LEGEND2 = 'LFO Wave  Speed  Delay  Pmd  Amd  Pms  Sync'.freeze
 
+    def self.default
+      voice = new
+
+      {
+        pr1: 99, pr2: 99, pr3: 99, pr4: 99, pl1: 50, pl2: 50, pl3: 50, pl4: 50,
+        opi: 1, lfs: 35, lfks: 1, lpms: 3, trnp: 24,
+        vnam1: 73, vnam2: 78, vnam3: 73, vnam4: 84, vnam5: 32, vnam6: 86, vnam7: 79, vnam8: 73, vnam9: 67, vnam10: 69,
+      }.each do |key, value|
+        voice = voice.set(key, value)
+      end
+      
+      voice
+    end
+
     def initialize(data: nil, operators: nil)
       check_validations!
       @operators = operators || 6.times.map { |i| Operator.default(i) }.freeze
-      @data = data || Hash.new(0).freeze
+      @data = data || Hash.new(0)
     end
 
     def to_s
@@ -74,8 +88,17 @@ module DX7
     end
 
     def vnam
-      @data.values_at(*%i[vnam1 vnam2 vnam3 vnam4 vnam5 vnam6 vnam7 vnam8 vnam9 vnam10]).map(&:chr).join
-      'helloworld'
+      s = ''
+      %i[vnam1 vnam2 vnam3 vnam4 vnam5 vnam6 vnam7 vnam8 vnam9 vnam10].each do |key|
+        b = @data[key]
+        if b.zero?
+          s << ' '
+        else
+          s << b.chr
+        end
+      end
+      
+      s
     end
 
     def lfw_human

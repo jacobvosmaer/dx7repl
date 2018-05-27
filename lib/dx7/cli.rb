@@ -1,7 +1,7 @@
 module DX7
   class CLI
     def initialize
-      @voice = Voice.new
+      @voice = Voice.default
     end
 
     def run

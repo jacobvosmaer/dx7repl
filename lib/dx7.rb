@@ -118,7 +118,7 @@ module DX7
   
       self.class.new(
         data: @data.merge(key => value).freeze,
-        operators: @operators
+        operators: @operators.map(&:clear_cur)
       )
     end
 
@@ -126,7 +126,7 @@ module DX7
       index = %i[op1 op2 op3 op4 op5 op6].index(op)
       raise "invalid op: #{op.inspect}" if index.nil?
     
-      operators = @operators.dup
+      operators = @operators.map(&:clear_cur)
       operators[index] = @operators[index].set(key, value)
     
       self.class.new(data: @data, operators: operators)

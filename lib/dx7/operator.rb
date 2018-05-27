@@ -33,23 +33,39 @@ module DX7
       op
     end
 
-    def initialize(data: nil)
+    def initialize(data: nil, cur: nil)
       check_validations!
       @data = data || Hash.new(0).freeze
+      @cur = cur
     end
 
     def to_s
+      env_values = %i[rs r1 r2 r3 r4 l1 l2 l3 l4 tl ld].flat_map { |k| data_cur(k) }
       sprintf(
-        '%5s    %5.2f      %2d      %2d  %2d  %2d  %2d  %2d  %2d  %2d  %2d  %2d       %2d  %2d  %4s  %4s  %4s  %2d     %2d   %2d',
-        pm_human, pitch_f, *@data.values_at(*%i[pd rs r1 r2 r3 r4 l1 l2 l3 l4 tl ld]), lc_human,
-        bp_human, rc_human ,*@data.values_at(*%i[rd ts ams])
+        '%5s%s  %s%5.2f%s     %2d%s     %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s      %2d%s %2d%s %4s%s %4s%s %4s%s %2d%s    %2d%s  %2d%s',
+        pm_human, cur(:pm), cur(:pc), pitch_f, cur(:pf), pd_human, cur(:pd),
+        *env_values,
+        lc_human, cur(:lc), bp_human, cur(:bp), rc_human, cur(:rc),
+        *data_cur(:rd), *data_cur(:ts), *data_cur(:ams)
       )
+    end
+
+    def data_cur(key)
+      [@data.fetch(key), cur(key)]
     end
 
     def set(key, value)
       validate!(key, value)
 
-      self.class.new(data: @data.merge(key => value).freeze)
+      self.class.new(data: @data.merge(key => value).freeze, cur: key)
+    end
+
+    def cur(key)
+      @cur == key ? '*' : ' '
+    end
+
+    def clear_cur
+      self.class.new(data: @data)
     end
 
     def pm_human
@@ -75,6 +91,10 @@ module DX7
       notes = %w[A A# B C D D# E F F# G G#]
       all_notes = 9.times.flat_map { |i| notes.map { |n| "#{n}#{i-1}" } }
       all_notes[@data[:bp]]
+    end
+
+    def pd_human
+      @data[:pd] - 7
     end
   end
 end

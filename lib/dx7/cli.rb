@@ -24,6 +24,8 @@ module DX7
         exit
       end
 
+      return if input == "\n"
+
       tokens = input.split
       op = nil
       if op?(tokens)

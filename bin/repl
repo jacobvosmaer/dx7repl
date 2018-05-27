@@ -3,7 +3,9 @@
 require_relative '../lib/dx7'
 
 def main
-  puts DX7::Voice.new
+  v = DX7::Voice.new
+  v.set(:pl1, 50)
+  puts v
 end
 
 main

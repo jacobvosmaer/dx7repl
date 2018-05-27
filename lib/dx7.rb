@@ -9,6 +9,16 @@ module DX7
       vnam1 vnam2 vnam3 vnam4 vnam5 vnam6 vnam7 vnam8 vnam9 vnam10
     ].freeze
 
+    VALIDATIONS = {
+      %i[pr1 pr2 pr3 pr4 pl1 pl2 pl3 pl4 lfs lfd lpmd pamd] => 0..99,
+      %i[als] => 0..31,
+      %i[fbl lpms] => 0..7,
+      %i[opi lfks] => 0..1,
+      %i[lfw] => 0..5,
+      %i[trnp] => 0..48,
+      %i[vnam1 vnam2 vnam3 vnam4 vnam5 vnam6 vnam7 vnam8 vnam9 vnam10] => 33..126,
+    }
+
     LEGEND1 = 'Alg  Fbl  Osc.sync  Transpose    Voice name'.freeze
     LEGEND3 = 'Pitch EG     R1  R2  R3  R4  L1  L2  L3  L4'.freeze
     LEGEND2 = 'LFO Wave  Speed  Delay  Pmd  Amd  Pms  Sync'.freeze
@@ -73,6 +83,22 @@ module DX7
 
     def alg_art
       Algorithms::ART[@data[:als]]
+    end
+
+    def set(key, value)
+      unless validation(key).include?(value)
+        raise "validation #{val} failed for #{key}" 
+      end
+    
+      @data[key] = value
+    end
+    
+    def validation(key)
+      VALIDATIONS.each do |keys, v|
+        return v if keys.include?(key)
+      end
+  
+      raise "validation not found for #{key}" if val.nil?
     end
   end
 end

@@ -1,8 +1,11 @@
 require_relative 'dx7/algorithms'
 require_relative 'dx7/operator'
+require_relative 'dx7/validations'
 
 module DX7
   class Voice
+    include Validations
+
     KEYS = %i[
       pr1 pr2 pr3 pr4 pl1 pl2 pl3 pl4
       als fbl opi lfs lfd lpmd pamd lfks lfw lpms trnp
@@ -24,6 +27,7 @@ module DX7
     LEGEND2 = 'LFO Wave  Speed  Delay  Pmd  Amd  Pms  Sync'.freeze
 
     def initialize
+      check_validations!
       @operators = 6.times.map { Operator.new }
       @data = Hash.new(0)
     end
@@ -86,19 +90,12 @@ module DX7
     end
 
     def set(key, value)
-      unless validation(key).include?(value)
-        raise "validation #{val} failed for #{key}" 
+      check = validation(key)
+      unless check.include?(value)
+        raise "validation #{check} failed for #{key} = #{value}" 
       end
     
       @data[key] = value
-    end
-    
-    def validation(key)
-      VALIDATIONS.each do |keys, v|
-        return v if keys.include?(key)
-      end
-  
-      raise "validation not found for #{key}" if val.nil?
     end
   end
 end

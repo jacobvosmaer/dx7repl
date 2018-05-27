@@ -26,10 +26,10 @@ module DX7
     LEGEND3 = 'Pitch EG     R1  R2  R3  R4  L1  L2  L3  L4'.freeze
     LEGEND2 = 'LFO Wave  Speed  Delay  Pmd  Amd  Pms  Sync'.freeze
 
-    def initialize
+    def initialize(data: nil, operators: nil)
       check_validations!
-      @operators = 6.times.map { Operator.new }
-      @data = Hash.new(0)
+      @operators = operators || 6.times.map { Operator.new }.freeze
+      @data = data || Hash.new(0).freeze
     end
 
     def to_s
@@ -90,8 +90,12 @@ module DX7
     end
 
     def set(key, value)
-      validate!(key, value)    
-      @data[key] = value
+      validate!(key, value)  
+  
+      self.class.new(
+        data: @data.merge(key => value).freeze,
+        operators: @operators
+      )
     end
   end
 end

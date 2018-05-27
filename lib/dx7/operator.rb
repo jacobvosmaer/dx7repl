@@ -17,9 +17,9 @@ module DX7
     LEGEND = 'Pitch  Pc / Pf  Detune  EG  Rs  R1  R2  R3  R4  L1  L2  L3  L4    Level  Ld    Lc    Bp    Rc  Rd    Vel  AMS'.freeze
     KEYBOARD_SCALE_CURVES = %w[-lin -exp +exp +lin].freeze
 
-    def initialize
+    def initialize(data: nil)
       check_validations!
-      @data = Hash.new(0)
+      @data = data || Hash.new(0).freeze
     end
 
     def to_s
@@ -32,7 +32,8 @@ module DX7
 
     def set(key, value)
       validate!(key, value)
-      @data[key] = value
+
+      self.class.new(data: @data.merge(key => value).freeze)
     end
 
     def pm_human

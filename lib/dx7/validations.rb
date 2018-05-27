@@ -1,5 +1,12 @@
 module DX7
   module Validations
+    def validate!(key, value)
+      check = validation(key)
+      unless check.include?(value)
+        raise "validation #{check} failed for #{key} = #{value}" 
+      end
+    end
+
     def validation(key)
       self.class::VALIDATIONS.each do |keys, v|
         return v if keys.include?(key)

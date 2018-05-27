@@ -90,11 +90,7 @@ module DX7
     end
 
     def set(key, value)
-      check = validation(key)
-      unless check.include?(value)
-        raise "validation #{check} failed for #{key} = #{value}" 
-      end
-    
+      validate!(key, value)    
       @data[key] = value
     end
   end

@@ -17,6 +17,22 @@ module DX7
     LEGEND = 'Pitch  Pc / Pf  Detune  EG  Rs  R1  R2  R3  R4  L1  L2  L3  L4    Level  Ld    Lc    Bp    Rc  Rd    Vel  AMS'.freeze
     KEYBOARD_SCALE_CURVES = %w[-lin -exp +exp +lin].freeze
 
+    def self.default(index)
+      op = new
+
+      {
+        r1: 99, r2: 99, r3: 99, r4: 99, l1: 99, l2: 99, l3: 99, l4: 0,
+        bp: 39, ld: 0, rd: 0, lc: 0, rc: 0, rs: 0, ams: 0, ts: 0, tl: 0,
+        pm: 0, pc: 1, pf: 0, pd: 7,
+      }.each do |k, v|
+        op = op.set(k, v)
+      end
+    
+      op = op.set(:tl, 99) if index == 0
+    
+      op
+    end
+
     def initialize(data: nil)
       check_validations!
       @data = data || Hash.new(0).freeze

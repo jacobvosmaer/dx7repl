@@ -29,7 +29,7 @@ module DX7
 
     def initialize(data: nil, operators: nil)
       check_validations!
-      @operators = operators || 6.times.map { Operator.new }.freeze
+      @operators = operators || 6.times.map { |i| Operator.default(i) }.freeze
       @data = data || Hash.new(0).freeze
     end
 

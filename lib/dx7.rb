@@ -41,10 +41,11 @@ module DX7
       voice
     end
 
-    def initialize(data: nil, operators: nil)
+    def initialize(data: nil, operators: nil, cur: nil)
       check_validations!
       @operators = operators || 6.times.map { |i| Operator.default(i) }.freeze
       @data = data || Hash.new(0)
+      @cur = cur
     end
 
     def to_s
@@ -56,25 +57,33 @@ module DX7
 
       lines << ('      ' + LEGEND1 + '               ' + alg_art[0])
       lines << sprintf(
-        '       %2d   %2d       %3s         %2s    %10s               %s',
-        @data[:als]+1, @data[:fbl], opi_human, trnp_human, vnam, alg_art[1]
+        '       %2d%s  %2d%s      %3s%s        %2s%s   %10s               %s',
+        @data[:als]+1, cur(:als), *data_cur(:fbl), opi_human, cur(:opi), trnp_human, cur(:trnp), vnam, alg_art[1]
       )
       lines << ('                                                                ' + alg_art[2])
 
       lines << ('      ' + LEGEND3 + '               ' + alg_art[3])
       lines << sprintf(
-        '                   %2d  %2d  %2d  %2d  %2d  %2d  %2d  %2d               %s',
-        *@data.values_at(*%i[pr1 pr2 pr3 pr4 pl1 pl2 pl3 pl4]), alg_art[4]
+        '                   %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s              %s',
+        *%i[pr1 pr2 pr3 pr4 pl1 pl2 pl3 pl4].flat_map { |k| data_cur(k) }, alg_art[4]
       )
       lines << ('                                                                ' + alg_art[5])
 
       lines << ('      ' + LEGEND2 + '               ' + alg_art[6])
       lines << sprintf(
-        '      %8s     %2d     %2d   %2s   %2d   %2d   %3s',
-        lfw_human, *@data.values_at(*%i[lfs lfd lpmd lamd lpms]), lfks_human
+        '      %8s%s    %2d%s    %2d%s  %2s%s  %2d%s  %2d%s  %3s%s',
+        lfw_human, cur(:lfw), *%i[lfs lfd lpmd lamd lpms].flat_map { |k| data_cur(k) }, lfks_human, cur(:lfks)
       )
 
       lines.join("\n")
+    end
+
+    def cur(key)
+      @cur == key ? '*' : ' '
+    end
+    
+    def data_cur(key)
+      [@data[key], cur(key)]
     end
 
     def opi_human
@@ -118,7 +127,8 @@ module DX7
   
       self.class.new(
         data: @data.merge(key => value).freeze,
-        operators: @operators.map(&:clear_cur)
+        operators: @operators.map(&:clear_cur),
+        cur: key
       )
     end
 

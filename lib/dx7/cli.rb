@@ -27,17 +27,30 @@ module DX7
       return if input == "\n"
 
       tokens = input.split
-      op = nil
-      if op?(tokens)
-        op = tokens.shift.to_sym
+
+      op, key = nil, nil
+
+      if tokens.size == 1
+        op, key = @previous_command
+      else
+        if op?(tokens)
+          op = tokens.shift.to_sym
+        end
+  
+        if tokens.size != 2
+          raise "invalid input: #{input.inspect}"
+        end
+
+        key = tokens.shift.to_sym
       end
 
-      if tokens.size != 2
-        raise "invalid input: #{input.inspect}"
-      end
+      val = Integer(tokens.shift)
 
-      key, val = tokens[0].to_sym, Integer(tokens[1])
+      raise 'no key' unless key
+      raise 'no value' unless val
+
       @voice = op ? @voice.set_op(op, key, val) : @voice.set(key, val)
+      @previous_command = [op, key]
     rescue => ex
       puts "\nERROR: #{ex}"
     end

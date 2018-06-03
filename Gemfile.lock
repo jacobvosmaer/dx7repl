@@ -1,0 +1,25 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    alsa-rawmidi (0.3.2)
+      ffi (~> 1.0)
+    ffi (1.9.24)
+    ffi-coremidi (0.4.1)
+      ffi (~> 1.9, >= 1.9.6)
+    midi-jruby (0.1.6)
+    midi-winmm (0.1.10)
+      ffi (>= 1.0)
+    unimidi (0.4.8)
+      alsa-rawmidi (~> 0.3, >= 0.3.1)
+      ffi-coremidi (~> 0.3, >= 0.3.5)
+      midi-jruby (~> 0.1, >= 0.1.4)
+      midi-winmm (~> 0.1, >= 0.1.10)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  unimidi
+
+BUNDLED WITH
+   1.16.2

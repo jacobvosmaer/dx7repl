@@ -1,7 +1,10 @@
+require 'unimidi'
+
 module DX7
   class CLI
     def initialize
       @voice = Voice.default
+      @output = UniMIDI::Output.gets if UniMIDI::Output.any?
     end
 
     def run
@@ -49,7 +52,7 @@ module DX7
       raise 'no key' unless key
       raise 'no value' unless val
 
-      @voice = op ? @voice.set_op(op, key, val) : @voice.set(key, val)
+      @voice = op ? @voice.set_op(op, key, val, output: @output) : @voice.set(key, val, output: @output)
       @previous_command = [op, key]
     rescue => ex
       puts "\nERROR: #{ex}"

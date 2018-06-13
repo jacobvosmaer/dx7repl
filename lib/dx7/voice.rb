@@ -119,7 +119,9 @@ module DX7
 
     def set(key, value, output: nil)
       validate!(key, value)  
-  
+ 
+      output&.puts(sysex_vced(key, value))
+
       self.class.new(
         data: @data.merge(key => value).freeze,
         operators: @operators.map(&:clear_cur),
@@ -133,8 +135,23 @@ module DX7
     
       operators = @operators.map(&:clear_cur)
       operators[index] = @operators[index].set(key, value)
-    
+
+      output&.puts(sysex_vced_op(index, key, value))
       self.class.new(data: @data, operators: operators)
+    end
+
+    def sysex_vced(key, value)
+      param_index = KEYS.index(key) + 126
+      [0xf0, 0x43, device_number, param_index >> 7, param_index & 0x7f, value & 0x7f, 0xf7]
+    end
+
+    def sysex_vced_op(op_index, key, value)
+      param = Operator::KEYS.index(key) + (5 - op_index) * 21
+      [0xf0, 0x43, device_number, 0, param, value & 0x7f, 0xf7]
+    end
+
+    def device_number
+      (1 << 4) | 0
     end
   end
 end

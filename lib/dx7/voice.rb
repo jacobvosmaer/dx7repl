@@ -1,15 +1,19 @@
+require_relative 'algorithms'
+require_relative 'validations'
+
 module DX7
   class Voice
     include Validations
 
+    # keys are in VMEM packed format order
     KEYS = %i[
       pr1 pr2 pr3 pr4 pl1 pl2 pl3 pl4
-      als fbl opi lfs lfd lpmd pamd lfks lfw lpms trnp
+      als fbl opi lfs lfd lpmd lamd lfks lfw lpms trnp
       vnam1 vnam2 vnam3 vnam4 vnam5 vnam6 vnam7 vnam8 vnam9 vnam10
     ].freeze
 
     VALIDATIONS = {
-      %i[pr1 pr2 pr3 pr4 pl1 pl2 pl3 pl4 lfs lfd lpmd pamd] => 0..99,
+      %i[pr1 pr2 pr3 pr4 pl1 pl2 pl3 pl4 lfs lfd lpmd lamd] => 0..99,
       %i[als] => 0..31,
       %i[fbl lpms] => 0..7,
       %i[opi lfks] => 0..1,

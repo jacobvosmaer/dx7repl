@@ -4,7 +4,9 @@ module DX7
   class Operator
     include Validations
 
-    KEYS = %i[r1 r2 r3 r4 l1 l2 l3 l4 bp ld rd lc rc rs ams ts tl pm pc pf pd].freeze
+    # keys are in VMEM packed format order
+    KEYS = %i[r1 r2 r3 r4 l1 l2 l3 l4 bp ld rd lc rc rs pd ams ts tl pm pc pf].freeze
+
     VALIDATIONS = {
       %i[r1 r2 r3 r4 l1 l2 l3 l4 bp ld rd tl pf] => 0..99,
       %i[lc rc ams] => 0..3,

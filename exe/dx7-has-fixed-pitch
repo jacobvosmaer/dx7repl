@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+v = ARGF.read.bytes
+if v.size != 128 
+  abort "expected to read 128 bytes of DX7 voice data, got #{v.size} bytes"
+end
+
+has_fixed = 6.times.any? do |i|
+  v[15 + i*17] & 0b1 > 0
+end
+
+exit has_fixed

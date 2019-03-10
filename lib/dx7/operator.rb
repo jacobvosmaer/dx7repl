@@ -43,8 +43,16 @@ module DX7
 
     def to_s
       env_values = %i[rs r1 r2 r3 r4 l1 l2 l3 l4 tl ld].flat_map { |k| data_cur(k) }
-      sprintf(
-        '%5s%s  %s%5.2f%s     %2d%s     %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s      %2d%s %2d%s %4s%s %4s%s %4s%s %2d%s    %2d%s  %2d%s',
+
+      format = '%5s%s  %s'
+      if ratio?
+        format << '%5.2f'
+      else
+        format << '%5.4g'
+      end
+      format << '%s     %2d%s     %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s      %2d%s %2d%s %4s%s %4s%s %4s%s %2d%s    %2d%s  %2d%s'
+
+      sprintf(format ,
         pm_human, cur(:pm), cur(:pc), pitch_f, cur(:pf), pd_human, cur(:pd),
         *env_values,
         lc_human, cur(:lc), bp_human, cur(:bp), rc_human, cur(:rc),
@@ -71,14 +79,23 @@ module DX7
     end
 
     def pm_human
-      @data[:pm].zero? ? 'ratio' : 'fixed'
+       ratio? ? 'ratio' : 'fixed'
+    end
+
+    def ratio?
+      @data[:pm].zero?
     end
 
     def pitch_f
-      coarse = @data[:pc].to_f
-      coarse = 0.5 if @data[:pc].zero?
-      delta = 2*coarse / 100
-      coarse + @data[:pf] * delta
+      if ratio?
+        coarse = @data[:pc].zero? ? 0.5 : @data[:pc].to_f
+        delta = 2*coarse / 100
+        coarse + @data[:pf] * delta
+      else
+        coarse = 10.0 ** (@data[:pc] & 3)
+        f = 10 ** (1/100.0)
+        coarse * (f ** @data[:pf])
+      end
     end
 
     def lc_human

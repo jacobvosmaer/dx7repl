@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/dx7'
+
+def main
+  DX7::CLI.new.run
+end
+
+main

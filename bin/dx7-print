@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/dx7/packed_voice'
+
+def main
+  puts DX7::PackedVoice.parse($stdin.read)
+end
+
+main

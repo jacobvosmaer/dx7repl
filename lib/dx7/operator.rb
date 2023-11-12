@@ -5,7 +5,7 @@ module DX7
     include Validations
 
     # keys are in VMEM packed format order
-    KEYS = %i[r1 r2 r3 r4 l1 l2 l3 l4 bp ld rd lc rc rs pd ams ts tl pm pc pf].freeze
+    KEYS = %i[r1 r2 r3 r4 l1 l2 l3 l4 bp ld rd lc rc rs ams ts tl pm pc pf pd].freeze
 
     VALIDATIONS = {
       %i[r1 r2 r3 r4 l1 l2 l3 l4 bp ld rd tl pf] => 0..99,

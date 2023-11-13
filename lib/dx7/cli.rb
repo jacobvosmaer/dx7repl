@@ -27,7 +27,15 @@ module DX7
         exit
       end
 
-      return if input == "\n"
+      input.chomp!
+      return if input.empty?
+
+      if input.start_with?('name ')
+        10.times do |i|
+          @voice = @voice.set(:"vnam#{i+1}", (input[5+i] || ' ').ord, output: @output)
+        end
+        return
+      end
 
       tokens = input.split
 

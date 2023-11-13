@@ -16,7 +16,7 @@ module DX7
       %i[pd] => 0..14,
     }.freeze
 
-    LEGEND = 'Pitch  Pc / Pf  Detune  EG  Rs  R1  R2  R3  R4  L1  L2  L3  L4    Level  Ld    Lc    Bp    Rc  Rd    Vel  AMS'.freeze
+    LEGEND = '   pm    pc/pf    pd  . rs  r1  r2  r3  r4  l1  l2  l3  l4  . tl  ld    lc    bp    rc  rd  . ts  ams'.freeze
     KEYBOARD_SCALE_CURVES = %w[-lin -exp +exp +lin].freeze
 
     def self.default(index)
@@ -50,7 +50,7 @@ module DX7
       else
         format << '%5.4g'
       end
-      format << '%s     %2d%s     %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s      %2d%s %2d%s %4s%s %4s%s %4s%s %2d%s    %2d%s  %2d%s'
+      format << '%s   %2d%s . %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s . %2d%s %2d%s %4s%s %4s%s %4s%s %2d%s . %2d%s  %2d%s'
 
       sprintf(format ,
         pm_human, cur(:pm), cur(:pc), pitch_f, cur(:pf), pd_human, cur(:pd),

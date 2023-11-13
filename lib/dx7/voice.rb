@@ -22,9 +22,9 @@ module DX7
       %i[vnam1 vnam2 vnam3 vnam4 vnam5 vnam6 vnam7 vnam8 vnam9 vnam10] => 32..126,
     }
 
-    LEGEND1 = 'Alg  Fbl  Osc.sync  Transpose    Voice name'.freeze
-    LEGEND3 = 'Pitch EG     R1  R2  R3  R4  L1  L2  L3  L4'.freeze
-    LEGEND2 = 'LFO Wave  Speed  Delay  Pmd  Amd  Pms  Sync'.freeze
+    LEGEND1 = 'Voice      als  fbl  opi  trnp  Name'.freeze
+    LEGEND3 = 'Pitch EG   pr1  pr2  pr3  pr4  pl1  pl2  pl3  pl4'.freeze
+    LEGEND2 = 'LFO             lfw  lfs  lfd lpmd lamd lpms lfks'.freeze
 
     def self.default
       voice = new
@@ -50,27 +50,28 @@ module DX7
     def to_s
       lines = []
 
+      lines << '      Operators'
       lines << ('      ' + Operator::LEGEND)
-      @operators.each_with_index { |op, i| lines << "OP#{i+1}   #{op}" }
+      @operators.each_with_index { |op, i| lines << "op#{i+1}   #{op}" }
       lines << ''
 
-      lines << ('      ' + LEGEND1 + '               ' + alg_art[0])
+      lines << ('      ' + LEGEND1 + '                      ' + alg_art[0])
       lines << sprintf(
-        '       %2d%s  %2d%s      %3s%s        %2s%s   %10s               %s',
+        '                  %2d%s  %2d%s %3s%s   %2s%s %10s                %s',
         @data[:als]+1, cur(:als), *data_cur(:fbl), opi_human, cur(:opi), trnp_human, cur(:trnp), vnam, alg_art[1]
       )
       lines << ('                                                                ' + alg_art[2])
 
-      lines << ('      ' + LEGEND3 + '               ' + alg_art[3])
+      lines << ('      ' + LEGEND3 + '         ' + alg_art[3])
       lines << sprintf(
-        '                   %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s %2d%s              %s',
+        '                  %2d%s  %2d%s  %2d%s  %2d%s  %2d%s  %2d%s  %2d%s  %2d%s        %s',
         *%i[pr1 pr2 pr3 pr4 pl1 pl2 pl3 pl4].flat_map { |k| data_cur(k) }, alg_art[4]
       )
       lines << ('                                                                ' + alg_art[5])
 
-      lines << ('      ' + LEGEND2 + '               ' + alg_art[6])
+      lines << ('      ' + LEGEND2 + '         ' + alg_art[6])
       lines << sprintf(
-        '      %8s%s    %2d%s    %2d%s  %2s%s  %2d%s  %2d%s  %3s%s',
+        '                 %8s%s  %2d%s  %2d%s  %2s%s  %2d%s  %2d%s %3s%s',
         lfw_human, cur(:lfw), *%i[lfs lfd lpmd lamd lpms].flat_map { |k| data_cur(k) }, lfks_human, cur(:lfks)
       )
 
